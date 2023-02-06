@@ -29,12 +29,24 @@ async function main() {
     res.send(user);
   });
 
+  app.post("/user", async function (req, res) {
+    const bodyUser = req.body;
+    if (!bodyUser || !bodyUser.name) {
+      res.status(400).send({
+        message:
+          "Usuario não cadastrado, favor verificar as informações digitadas!",
+      });
+    } else {
+      await collectionUser.insertOne(bodyUser);
+      res.send({
+        message: "Usuario cadastrado com sucesso!",
+      });
+    }
+  });
+
   app.listen(port, () => {
     console.log(`Servidor rodando na porta ${port}`);
   });
 }
 
-main()
-  .then((data) => console.log(data))
-  .catch((error) => console.log(error))
-  .finally(() => client.close());
+main();
