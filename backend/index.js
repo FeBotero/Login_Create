@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const { MongoClient } = require("mongodb");
+const { MongoClient, ObjectId } = require("mongodb");
 require("dotenv").config();
 const cors = require("cors");
 
@@ -24,23 +24,48 @@ async function main() {
   });
 
   app.get("/user", async function (req, res) {
-    const user = await collectionUser.find().toArray();
+    const users = await collectionUser.find().toArray();
 
-    res.send(user);
+    res.send(users);
+  });
+
+  app.get("/user/:id", async function (req, res) {
+    const id = req.params.id;
+    const user = await collectionUser.findOne({
+      _id: new ObjectId(id),
+    });
+
+    if (!user) {
+      res.status(400).send({
+        message: "Usuario não encontrado",
+      });
+    } else {
+      res.send(user);
+    }
   });
 
   app.post("/user", async function (req, res) {
     const bodyUser = req.body;
-    if (!bodyUser || !bodyUser.name) {
+    const users = await collectionUser.find().toArray();
+
+    const validateUser = users.some((user) => user.user === bodyUser.user);
+
+    if (validateUser === true) {
       res.status(400).send({
-        message:
-          "Usuario não cadastrado, favor verificar as informações digitadas!",
+        message: "Usuario já cadastrado!",
       });
     } else {
-      await collectionUser.insertOne(bodyUser);
-      res.send({
-        message: "Usuario cadastrado com sucesso!",
-      });
+      if (!bodyUser || !bodyUser.name) {
+        res.status(400).send({
+          message:
+            "Usuario não cadastrado, favor verificar as informações digitadas!",
+        });
+      } else {
+        if (bodyUser.user) await collectionUser.insertOne(bodyUser);
+        res.status(201).send({
+          message: "Usuario cadastrado com sucesso!",
+        });
+      }
     }
   });
 
