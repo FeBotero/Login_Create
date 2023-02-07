@@ -3,6 +3,7 @@ const app = express();
 const { MongoClient, ObjectId } = require("mongodb");
 require("dotenv").config();
 const cors = require("cors");
+const bcrypt = require("bcrypt");
 
 const port = process.env.PORTA;
 
@@ -83,6 +84,11 @@ async function main() {
 
   app.post("/user", async function (req, res) {
     const bodyUser = req.body;
+    console.log(bodyUser.password);
+    const lastp = bodyUser.password;
+    bodyUser.password = await bcrypt.hash(bodyUser.password, 8);
+    bcrypt.compare(lastp, bodyUser.password, () => console.log("ok"));
+    console.log(bodyUser.password);
     const users = await collectionUser.find().toArray();
 
     const validateUser = users.some((user) => user.user === bodyUser.user);
