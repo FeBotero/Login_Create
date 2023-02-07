@@ -10,11 +10,31 @@ const url = process.env.URL;
 const client = new MongoClient(url);
 const dbName = process.env.DBNAME;
 
+console.log("Conexão com servidor estabelecida com sucesso!");
+const db = client.db(dbName);
+const collectionUser = db.collection("users");
+
+// Middlware
+async function verifyUser(req, res, next) {
+  const { user } = req.headers;
+
+  const users = await collectionUser.find().toArray();
+
+  const checkUser = users.find((userC) => userC.userName === user);
+
+  if (!checkUser) {
+    res.status(400).send({
+      message: "Usuario não encontrado!",
+    });
+  }
+
+  req.checkUser = checkUser;
+
+  return next();
+}
+
 async function main() {
   await client.connect();
-  console.log("Conexão com servidor estabelecida com sucesso!");
-  const db = client.db(dbName);
-  const collectionUser = db.collection("users");
 
   app.use(cors());
   app.use(express.json());
@@ -42,6 +62,23 @@ async function main() {
     } else {
       res.send(user);
     }
+  });
+
+  app.get("/auth", verifyUser, async function (req, res) {
+    const { checkUser } = req;
+    console.log(checkUser);
+    const { password } = req.headers;
+    if (checkUser.password === password) {
+      res.status(201).send({
+        message: "Usuario logado com sucesso",
+      });
+    } else {
+      res.status(400).send({
+        message: "Senha inconrreta",
+      });
+    }
+
+    res.send(checkUser);
   });
 
   app.post("/user", async function (req, res) {
