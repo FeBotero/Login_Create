@@ -1,0 +1,21 @@
+.Header{
+    display: flex;
+    justify-content: space-between;
+    width: 98vw;
+    align-items: center;
+}
+.loginHbutton
+{
+    margin-top: 1rem;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    background: rgb(121, 121, 221);
+    color:white;
+    font-size: larger;
+}
+.loginHbutton:hover{
+    cursor: pointer;
+    font-weight: bold;
+    transform: scale(1.05);
+}

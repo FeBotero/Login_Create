@@ -1,0 +1,71 @@
+form{
+    display:flex;
+    flex-direction: column;
+    width: 15rem;
+    gap: 0.2rem;
+}
+.loginButton,
+.createButton{
+    margin-top: 1rem;
+    border: none;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    color:white;
+    font-size: larger;
+}
+.loginButton{
+    background: rgb(121, 121, 221);
+}
+.createButton{
+    background: rgb(121, 221, 163);;
+}
+
+.loginButton:hover,
+.createButton:hover
+{
+    cursor: pointer;
+    font-weight: bold;
+    transform: scale(1.05);
+}
+.containerLogin,
+.containerUser{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 3rem;
+    
+}
+
+.contentLogin{
+    background: rgba(201, 224, 245, 0.418);
+    padding: 2rem 3rem;
+    border-radius: 0.5rem;
+}
+.contentUser{
+    background:rgba(213, 245, 201, 0.418);
+    padding: 2rem 3rem;
+    border-radius: 0.5rem;
+}
+.containerLogin input{
+    height: 1.5rem;
+    border: none;
+    border-radius: 0.5rem;
+    background: rgba(201, 224, 245, 0.418);
+}
+.containerLogin input:focus{
+    background: rgb(181, 212, 241);
+    outline: none;
+
+}
+.containerUser input{
+    height: 1.5rem;
+    border: none;
+    border-radius: 0.5rem;
+    background: rgba(213, 245, 201, 0.418);
+}
+
+.containerUser input:focus{
+    background: rgb(203, 241, 181);
+    outline: none;
+
+}
