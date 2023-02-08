@@ -1,119 +1,179 @@
 const express = require("express");
-const app = express();
 const { MongoClient, ObjectId } = require("mongodb");
 require("dotenv").config();
-const cors = require("cors");
 const bcrypt = require("bcrypt");
+const cors = require("cors");
+const jwt = require("jsonwebtoken");
 
 const port = process.env.PORTA;
 
 const url = process.env.URL;
-const client = new MongoClient(url);
+
 const dbName = process.env.DBNAME;
 
-console.log("Conexão com servidor estabelecida com sucesso!");
-const db = client.db(dbName);
-const collectionUser = db.collection("users");
-
-// Middlware
-async function verifyUser(req, res, next) {
-  const { user } = req.headers;
-
-  const users = await collectionUser.find().toArray();
-
-  const checkUser = users.find((userC) => userC.userName === user);
-
-  if (!checkUser) {
-    res.status(400).send({
-      message: "Usuario não encontrado!",
-    });
-  }
-
-  req.checkUser = checkUser;
-
-  return next();
-}
-
 async function main() {
-  await client.connect();
+  console.log("Conectando com banco de dados...");
+  const client = await MongoClient.connect(url);
+
+  const db = client.db(dbName);
+
+  const userCollection = db.collection("users");
+
+  console.log("Conexão com servidor estabelecida com sucesso!");
+
+  const app = express();
 
   app.use(cors());
   app.use(express.json());
 
+  //Public Routes
   app.get("/", function (req, res) {
-    res.send("Hello World");
+    return res.status(201).json({
+      message: "Servidor rodando!",
+    });
   });
-
-  app.get("/user", async function (req, res) {
-    const users = await collectionUser.find().toArray();
-
-    res.send(users);
-  });
-
-  app.get("/user/:id", async function (req, res) {
+  //Private Routes
+  app.get("/user/:id", checkToken, async function (req, res) {
     const id = req.params.id;
-    const user = await collectionUser.findOne({
+
+    const user = await userCollection.findOne({
       _id: new ObjectId(id),
     });
 
     if (!user) {
-      res.status(400).send({
-        message: "Usuario não encontrado",
+      return res.status(404).json({
+        message: "Usuario não encontrado!",
       });
-    } else {
-      res.send(user);
+    }
+
+    res.status(200).json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+    });
+  });
+  function checkToken(req, res, next) {
+    const authHeader = req.headers["authorization"];
+    const token = authHeader && authHeader.split(" ")[1];
+    if (!token) {
+      return res.status(401).json({ message: "Acesso negado!" });
+    }
+    try {
+      const secret = process.env.secret;
+      jwt.verify(token, secret);
+
+      next();
+    } catch (error) {
+      res.status(400).json({ message: "Token inválido!" });
+    }
+  }
+
+  //Create User
+  app.post("/user/register", async function (req, res) {
+    const { name, email, password, confirmPassword } = req.body;
+
+    const users = await userCollection.find().toArray();
+
+    if (!name) {
+      return res.status(422).json({
+        message: "Favor inserir nome!",
+      });
+    }
+    if (!email) {
+      return res.status(422).json({
+        message: "Favor inserir o email!",
+      });
+    }
+
+    const checkEmail = users.some((user) => user.email === email);
+    if (checkEmail) {
+      return res.status(422).json({
+        message: "Email já cadastrado!",
+      });
+    }
+
+    if (!password) {
+      return res.status(422).json({
+        message: "Favor inserir a senha!",
+      });
+    }
+    if (password != confirmPassword) {
+      return res.status(422).json({
+        message: "Senhas não coicidem!",
+      });
+    }
+    const salt = await bcrypt.genSalt(12);
+    const passwordHash = await bcrypt.hash(password, salt);
+
+    const newUser = {
+      name,
+      email,
+      password: passwordHash,
+    };
+
+    await userCollection.insertOne(newUser);
+    return res.status(201).json({
+      message: "Usuário cadastrado com sucesso!",
+    });
+  });
+
+  //Login User
+  app.post("/user/login", async function (req, res) {
+    const { email, password } = req.body;
+    if (!email) {
+      return res.status(422).json({
+        message: "Favor inserir o email!",
+      });
+    }
+    if (!password) {
+      return res.status(422).json({
+        message: "Favor inserir a senha!",
+      });
+    }
+    const checkUser = await userCollection.findOne({ email: email });
+
+    if (!checkUser) {
+      return res.status(422).json({
+        message: "Usuário não encontrado!",
+      });
+    }
+    const verifyPass = await bcrypt.compare(password, checkUser.password);
+
+    if (!verifyPass) {
+      return res.status(422).json({
+        message: "A senha inserida não confere!",
+      });
+    }
+
+    try {
+      const secret = process.env.secret;
+      const token = jwt.sign(
+        {
+          id: checkUser._id,
+        },
+        secret
+      );
+      res.status(200).json({
+        message: "Autenticação realizada com sucesso!",
+        token,
+      });
+    } catch (err) {
+      console.log(err);
+
+      res.status(500).json({
+        message: "Aconteceu algo no servidor, tente novamente mais tarde.",
+      });
     }
   });
 
-  app.get("/auth", verifyUser, async function (req, res) {
-    const { checkUser } = req;
-    console.log(checkUser);
-    const { password } = req.headers;
-    if (checkUser.password === password) {
-      res.status(201).send({
-        message: "Usuario logado com sucesso",
-      });
-    } else {
-      res.status(400).send({
-        message: "Senha inconrreta",
-      });
-    }
+  app.get("/user", async function (req, res) {
+    const users = await userCollection.find().toArray();
 
-    res.send(checkUser);
-  });
-
-  app.post("/user", async function (req, res) {
-    const bodyUser = req.body;
-    console.log(bodyUser.password);
-    const lastp = bodyUser.password;
-    bodyUser.password = await bcrypt.hash(bodyUser.password, 8);
-    bcrypt.compare(lastp, bodyUser.password, () => console.log("ok"));
-    console.log(bodyUser.password);
-    const users = await collectionUser.find().toArray();
-
-    const validateUser = users.some((user) => user.user === bodyUser.user);
-
-    if (validateUser === true) {
-      res.status(400).send({
-        message: "Usuario já cadastrado!",
-      });
-    } else {
-      if (!bodyUser || !bodyUser.name) {
-        res.status(400).send({
-          message:
-            "Usuario não cadastrado, favor verificar as informações digitadas!",
-        });
-      } else {
-        if (bodyUser.user) await collectionUser.insertOne(bodyUser);
-        res.status(201).send({
-          message: "Usuario cadastrado com sucesso!",
-        });
-      }
-    }
+    res.json(users);
   });
 
   app.listen(port, () => {
-    console.log(`Servidor rodando na porta ${port}`);
+    console.log("Servidor rodando na porta ", port);
   });
 }
 
