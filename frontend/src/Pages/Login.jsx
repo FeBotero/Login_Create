@@ -23,6 +23,7 @@ export function Login(){
 
             if(request.status==200){
                 alert(data.message)
+                localStorage.setItem("token",data.token)
             }else{
                 alert(data.message)
             }
