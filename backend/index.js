@@ -35,10 +35,14 @@ async function main() {
   //Private Routes
   app.get("/user/:id", checkToken, async function (req, res) {
     const id = req.params.id;
+    console.log(req);
 
-    const user = await userCollection.findOne({
-      _id: new ObjectId(id),
-    });
+    const user = await userCollection.findOne(
+      {
+        _id: new ObjectId(id),
+      },
+      { projection: { password: 0 } }
+    );
 
     if (!user) {
       return res.status(404).json({
@@ -46,11 +50,7 @@ async function main() {
       });
     }
 
-    res.status(200).json({
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-    });
+    res.status(200).json(user);
   });
   function checkToken(req, res, next) {
     const authHeader = req.headers["authorization"];
@@ -119,7 +119,7 @@ async function main() {
 
   //Login User
   app.post("/user/login", async function (req, res) {
-    const { email, password } = req.body;
+    const { email, password, _id } = req.body;
     if (!email) {
       return res.status(422).json({
         message: "Favor inserir o email!",
@@ -156,6 +156,8 @@ async function main() {
       res.status(200).json({
         message: "Autenticação realizada com sucesso!",
         token,
+        email,
+        id: checkUser._id,
       });
     } catch (err) {
       console.log(err);

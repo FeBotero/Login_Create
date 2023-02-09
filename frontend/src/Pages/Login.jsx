@@ -20,10 +20,15 @@ export function Login(){
         if(ValidarEmail(payload.email)){
             const request = await API.users.conectUrl(payload)
             const data = await request.json()
-
+            console.log(data)
+            const user = {
+                email:data.email,
+                token:data.token,
+                id:data.id
+            }
             if(request.status==200){
                 alert(data.message)
-                localStorage.setItem("token",data.token)
+                localStorage.setItem("user",JSON.stringify(user))
             }else{
                 alert(data.message)
             }

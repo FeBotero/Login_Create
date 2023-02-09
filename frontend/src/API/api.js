@@ -1,6 +1,17 @@
-const getRequest = function (url) {
+const getRequest = function (url, token) {
   return fetch(url, {
     method: "GET",
+    headers: new Headers({
+      authorization: `Bearer ${token}`,
+    }),
+  });
+};
+const getRequestAuthorization = function (url, token) {
+  return fetch(url, {
+    method: "GET",
+    headers: new Headers({
+      authorization: `Bearer ${token}`,
+    }),
   });
 };
 const createRequest = function (url, body) {
@@ -46,8 +57,8 @@ export const API = {
     readAll: function () {
       return getRequest(this.endpoint());
     },
-    readById: function (id) {
-      return getRequest(this.endpoint() + "/" + id);
+    readById: function (id, token) {
+      return getRequestAuthorization(this.endpoint() + "/" + id, token);
     },
     deleteUrl: function (id) {
       return deleteRequest(this.endpoint() + "/" + id);
