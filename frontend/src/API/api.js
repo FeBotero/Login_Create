@@ -28,29 +28,29 @@ const updateRequest = function (url, body) {
 };
 
 export const API = {
-  baseURL: "http://localhost:3000",
+  baseURL: "http://localhost:3333/",
 
   users: {
     endpoint: function () {
-      return API.baseURL + "/user";
+      return API.baseURL + "user";
     },
     createUrl: function (body) {
-      return createRequest(this.endpoint(), body);
+      return createRequest(this.endpoint() + "/register", body);
     },
     conectUrl: function (body) {
-      return createRequest(this.endpoint(), +"/" + "login", body);
+      return createRequest(this.endpoint() + "/login", body);
     },
     updteUrl: function (body, id) {
-      return updateRequest(this.endpoint + "/" + id, body);
+      return updateRequest(this.endpoint() + "/" + id, body);
     },
     readAll: function () {
       return getRequest(this.endpoint());
     },
     readById: function (id) {
-      return getRequest(this.endpoint + "/" + id);
+      return getRequest(this.endpoint() + "/" + id);
     },
     deleteUrl: function (id) {
-      return deleteRequest(this.endpoint + "/" + id);
+      return deleteRequest(this.endpoint() + "/" + id);
     },
   },
 };

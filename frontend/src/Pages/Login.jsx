@@ -22,9 +22,9 @@ export function Login(){
             const data = await request.json()
 
             if(request.status==200){
-                alert("Sucesso",data.message)
+                alert(data.message)
             }else{
-                alert("Aconteceu algo!",data.message)
+                alert(data.message)
             }
         }else{
             alert("Favor inserir um email valido!")
