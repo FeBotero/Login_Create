@@ -1,6 +1,9 @@
-[ ] Criar rotas Back
-[ ] Encriptar senha
-[ ] Validar o ID se é um objetctID (verificar validação de id do projeto fullstack)
+Tarefas
+[x] Criar rotas Back
+[x] Encriptar senha
+[x] Validar o ID se é um objetctID (verificar validação de id do projeto fullstack)
+[ ]
 
 Regras de Negocio
-[ ] Não pode ser feito um cadastro com mesmo nome de usuario
+[x] Não pode ser feito um cadastro com mesmo nome de usuario
+[ ] Assim que registrar enviar para pagina de usuario e atualizar o header

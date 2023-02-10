@@ -49,7 +49,6 @@ async function main() {
         message: "Usuario não encontrado!",
       });
     }
-
     res.status(200).json(user);
   });
   function checkToken(req, res, next) {
@@ -119,7 +118,7 @@ async function main() {
 
   //Login User
   app.post("/user/login", async function (req, res) {
-    const { email, password, _id } = req.body;
+    const { email, password } = req.body;
     if (!email) {
       return res.status(422).json({
         message: "Favor inserir o email!",
@@ -157,6 +156,7 @@ async function main() {
         message: "Autenticação realizada com sucesso!",
         token,
         email,
+        name: checkUser.name,
         id: checkUser._id,
       });
     } catch (err) {

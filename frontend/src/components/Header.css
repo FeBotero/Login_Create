@@ -19,3 +19,36 @@
     font-weight: bold;
     transform: scale(1.05);
 }
+.contentInfoUser{
+    display: flex;
+    align-items: center;
+    gap:1rem
+}
+.contentInfoUser p{
+    font-size: large;
+    font-weight: bold;
+}
+.userImage{
+    width: 3.5rem;
+ 
+}
+.dropdownLogout{
+    display: flex;
+    flex-direction: column;
+}
+li{
+    list-style-type: none
+}
+.box{
+    position: absolute;
+    height: 200px;
+    margin-top: 0.2rem;
+    
+    
+  }
+  .buttonLogout{
+    width: 4.4rem;
+  }
+  .hidden {
+    display: none;
+  }

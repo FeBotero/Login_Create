@@ -1,10 +1,26 @@
-import {Link} from "react-router-dom"
+import {Link, useNavigate} from "react-router-dom"
 import "./form.css"
 import { API } from "../API/api"
-import { useState } from "react"
+import { useEffect, useState } from "react"
+
+
 export function Login(){
     const [user,setUser] = useState()
     const [pass,setPass] = useState()
+    const navigate = useNavigate()
+    const userInfo = JSON.parse(localStorage.getItem("user"))
+    async function getUser(){
+        const info = await API.users.readById(userInfo.id,userInfo.token)
+    }
+
+    useEffect(()=>{
+        if(userInfo.token){
+            navigate("/user/")
+        }
+    })
+
+
+
 
 
     async function conectUser(event){
@@ -20,15 +36,17 @@ export function Login(){
         if(ValidarEmail(payload.email)){
             const request = await API.users.conectUrl(payload)
             const data = await request.json()
-            console.log(data)
+
             const user = {
                 email:data.email,
                 token:data.token,
-                id:data.id
+                id:data.id,
+                name:data.name
             }
             if(request.status==200){
                 alert(data.message)
                 localStorage.setItem("user",JSON.stringify(user))
+                navigate("/User/"+user.id)
             }else{
                 alert(data.message)
             }
@@ -36,10 +54,6 @@ export function Login(){
             alert("Favor inserir um email valido!")
         }
     }
-
-
-
-
     return(
         <div className="containerLogin">
             <div className="contentLogin">
@@ -50,7 +64,7 @@ export function Login(){
             <input type="password" id="password" onChange={(e)=>setPass(e.target.value)}/>
             <button className="loginButton">Login</button>
         </form>
-        <p>Ainda não tem cadastro? <Link to="/user">Clique Aqui!</Link></p>
+        <p>Ainda não tem cadastro? <Link to="/register">Clique Aqui!</Link></p>
         </div>
         </div>
    )
