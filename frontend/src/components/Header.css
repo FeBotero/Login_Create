@@ -28,9 +28,13 @@
     font-size: large;
     font-weight: bold;
 }
-.userImage{
+.userImage>img{
     width: 3.5rem;
- 
+}
+.userImage{
+    background: transparent;
+    border: none;
+    cursor: pointer;
 }
 .dropdownLogout{
     display: flex;
@@ -41,11 +45,22 @@ li{
 }
 .box{
     position: absolute;
-    height: 200px;
-    margin-top: 0.2rem;
+    height: 2rem;
     
+    margin-top: -0.5rem;
+
     
   }
+.box>button{
+    border:none;
+    background: gray;
+    color:white;
+    height: 1.5rem;
+    font-size: large;
+    border-radius: 0.5rem;
+    cursor: pointer;
+}
+
   .buttonLogout{
     width: 4.4rem;
   }

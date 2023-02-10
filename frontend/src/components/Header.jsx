@@ -6,35 +6,38 @@ import "./Header.css"
 
 
 
-export function Header({user,refreshUser}){
-    const userInfo = user
-    const [header,setHeader]=useState()
-    const [flag,setFlag]=useState(true)
-    const navigate = useNavigate()
+export function Header({user}){
     
+    const [header,setHeader]=useState()
+    const [flag,setFlag]=useState(false)
+    const navigate = useNavigate()
+    function showHeader(){
+
+        setHeader(user)
+    }
+
 
     function logout(){
         localStorage.removeItem("user")
         navigate("/")
-        refreshUser()
+        window.location.href=window.location.href
     }   
 
-    function showHeader(){
-        setHeader(userInfo)
-        
-    }
     
+    console.log(header)
     function handleUpdate(){
         setFlag(!flag);
     }
     useEffect(()=>{
+
+
         showHeader()
     },[])
 
     return(
         <div>
             { 
-                header==null ?
+                header==null||header==undefined ?
                 <div className="Header">
                 <Link to="/"><p>Logo</p></Link>
                 <Link to="/login"><button className="loginHbutton">Login</button></Link>
@@ -45,7 +48,7 @@ export function Header({user,refreshUser}){
                 <p>{header.name}</p>
                     <div className='dropdownLogout'>
                     <div>
-                <button onClick={handleUpdate}><img className="userImage" src={userImage} alt="" /></button>
+                <button className="userImage" onClick={handleUpdate}><img  src={userImage} alt="" /></button>
                 <div className={flag===true?"box":"hidden"}>
                     <button onClick={logout}className='buttonLogout'>Logout</button>
                 </div>

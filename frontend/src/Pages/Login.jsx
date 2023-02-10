@@ -9,20 +9,18 @@ export function Login(){
     const [pass,setPass] = useState()
     const navigate = useNavigate()
     const userInfo = JSON.parse(localStorage.getItem("user"))
-    async function getUser(){
-        const info = await API.users.readById(userInfo.id,userInfo.token)
-    }
+    // async function getUser(){
+    //     const info = await API.users.readById(userInfo.id,userInfo.token)
+    // }
 
     useEffect(()=>{
-        if(userInfo.token){
-            navigate("/user/")
-        }
+
+        // if(userInfo.token!=null||userInfo.token!=""||!userInfo){
+        //     navigate(`/user/${userInfo.id}`)
+        // }else{
+        //     navigate("/login")
+        // }
     })
-
-
-
-
-
     async function conectUser(event){
         event.preventDefault()
         function ValidarEmail (email) {
@@ -47,6 +45,7 @@ export function Login(){
                 alert(data.message)
                 localStorage.setItem("user",JSON.stringify(user))
                 navigate("/User/"+user.id)
+                window.location.href = window.location.href
             }else{
                 alert(data.message)
             }

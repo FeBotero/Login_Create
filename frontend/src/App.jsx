@@ -11,20 +11,24 @@ import { useEffect, useState } from "react"
 export function App() {
   const [user,setUser]=useState()
 
-    function showUser(){
+     function showUser(){
       const infoUser = localStorage.getItem("user")
       setUser(JSON.parse(infoUser))  
     }
-
-    useEffect(()=>{showUser(  )},[])
-
+   console.log(user)
+    useEffect(()=>{
+      showUser()
+         
+      },[])
+     
   return (
     <div className="App">
-            <Routes>
+      <Header user={user} />
+      <Routes>
           <Route exact path="/"index  element={<Home/>}/>
           <Route exact path="/login" element={<Login/>}/>
           <Route exact path="/register" element={<Create/>}/>
-          <Route exact path="/user/:id" element={<Users />}/>
+          <Route exact path="/user/:id" element={<Users user={user}/>}/>
         
       </Routes>
       
