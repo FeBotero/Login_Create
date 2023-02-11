@@ -6,60 +6,18 @@ import "./Header.css"
 
 
 
-export function Header({user}){
+export function Header(props){
     
-    const [header,setHeader]=useState()
-    const [flag,setFlag]=useState(false)
-    const navigate = useNavigate()
-    function showHeader(){
-
-        setHeader(user)
-    }
-
-
-    function logout(){
-        localStorage.removeItem("user")
-        navigate("/")
-        window.location.href=window.location.href
-    }   
-
     
-    console.log(header)
-    function handleUpdate(){
-        setFlag(!flag);
-    }
-    useEffect(()=>{
-
-
-        showHeader()
-    },[])
-
     return(
         <div>
-            { 
-                header==null||header==undefined ?
-                <div className="Header">
+           
+           <div className="Header">
                 <Link to="/"><p>Logo</p></Link>
                 <Link to="/login"><button className="loginHbutton">Login</button></Link>
-                </div>:
-                <div className="Header">
-                <Link to="/"><p>Logo</p></Link>
-                <div className="contentInfoUser">
-                <p>{header.name}</p>
-                    <div className='dropdownLogout'>
-                    <div>
-                <button className="userImage" onClick={handleUpdate}><img  src={userImage} alt="" /></button>
-                <div className={flag===true?"box":"hidden"}>
-                    <button onClick={logout}className='buttonLogout'>Logout</button>
                 </div>
-            </div>
-                    </div>
-                </div>
-            </div>
-            }
+           
         </div>
     )
+
 }
-
-
-// box ${flag === false ? "" : "hidden"}

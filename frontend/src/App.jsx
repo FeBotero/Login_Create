@@ -3,6 +3,7 @@ import { Route, Routes,Navigate  } from "react-router-dom"
 import { Create } from "./Pages/Create"
 import { Home } from "./Pages/Home"
 import { Header } from "./components/Header"
+import { HeaderUser } from "./components/HeaderUser"
 import { Login } from "./Pages/Login"
 import { Users } from "./Pages/Users"
 
@@ -15,7 +16,7 @@ export function App() {
       const infoUser = localStorage.getItem("user")
       setUser(JSON.parse(infoUser))  
     }
-   console.log(user)
+
     useEffect(()=>{
       showUser()
          
@@ -23,12 +24,12 @@ export function App() {
      
   return (
     <div className="App">
-      <Header user={user} />
+      {user?<HeaderUser props={user} id={user.id}/>:<Header/>}
       <Routes>
           <Route exact path="/"index  element={<Home/>}/>
           <Route exact path="/login" element={<Login/>}/>
           <Route exact path="/register" element={<Create/>}/>
-          <Route exact path="/user/:id" element={<Users user={user}/>}/>
+          <Route exact path="/user/:id" element={<Users />}/>
         
       </Routes>
       

@@ -1,5 +1,5 @@
 
-import {Link} from "react-router-dom"
+import {Link, useNavigate} from "react-router-dom"
 import "./form.css"
 import { useState } from "react"
 import { API } from "../API/api"
@@ -8,6 +8,7 @@ export function Create(){
     const [name,setName] = useState()
     const [pass,setPass] = useState()
     const [confPass,setConfPass] = useState()
+    const navigate = useNavigate()
 
 
     async function createUser(event){
@@ -30,6 +31,8 @@ export function Create(){
             const data = await request.json()
             if(request.status==201){
                 alert(data.message)
+                navigate("/User/"+user.id)
+                window.location.href=window.location.href
             }else{
                 alert(data.message)
             }

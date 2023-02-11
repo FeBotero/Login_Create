@@ -35,7 +35,6 @@ async function main() {
   //Private Routes
   app.get("/user/:id", checkToken, async function (req, res) {
     const id = req.params.id;
-    console.log(req);
 
     const user = await userCollection.findOne(
       {
@@ -43,7 +42,7 @@ async function main() {
       },
       { projection: { password: 0 } }
     );
-
+    console.log(user);
     if (!user) {
       return res.status(404).json({
         message: "Usuario não encontrado!",
