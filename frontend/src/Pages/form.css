@@ -80,12 +80,12 @@ form{
 }
 .contentInfo{
     background: #3949AB;
-    padding: 1rem 6rem;
+    padding: 1rem 1rem;
 }
 .contentInfoUser{
     background: #023307;
     
-    padding: 1rem 8rem;
+    padding: 1rem 4.5rem;
 }
 /* .contentInfoUser{
     display: flex;
