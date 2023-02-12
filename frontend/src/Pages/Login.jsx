@@ -1,13 +1,21 @@
 import {Link, useNavigate} from "react-router-dom"
 import "./form.css"
 import { API } from "../API/api"
-import { useEffect, useState } from "react"
+import { useState } from "react"
+import logoPerson from "../assets/logoPerson.png"
+import { Envelope,Lock } from "phosphor-react";
+import "react-toastify/dist/ReactToastify.css";
 
+import { ToastContainer, toast } from 'react-toastify';
 
 export function Login(){
     const [user,setUser] = useState()
     const [pass,setPass] = useState()
     const navigate = useNavigate()
+
+    function buttonRegister(){
+        navigate("/register")
+    }
 
    
     async function conectUser(event){
@@ -31,30 +39,59 @@ export function Login(){
                 name:data.name
             }
             if(request.status==200){
-                alert(data.message)
+                
+                toast.success(data.message, {
+                    position: toast.POSITION.TOP_RIGHT
+                });
                 localStorage.setItem("user",JSON.stringify(user))
                 navigate("/User/"+user.id)
                 window.location.href=window.location.href
 
             }else{
-                alert(data.message)
+                
+                toast.error(data.message, {
+                    position: toast.POSITION.TOP_CENTER
+                });
             }
         }else{
-            alert("Favor inserir um email valido!")
+            toast.error('Favor inserir um email valido!', {
+                position: toast.POSITION.TOP_CENTER
+            });
+            
         }
     }
     return(
         <div className="containerLogin">
             <div className="contentLogin">
-        <form onSubmit={conectUser}>
-            <label htmlFor="userName">Email</label>
-            <input type="email" id="userName" onChange={e=>setUser(e.target.value)}/>
-            <label htmlFor="password">Senha</label>
-            <input type="password" id="password" onChange={(e)=>setPass(e.target.value)}/>
-            <button className="loginButton">Login</button>
-        </form>
-        <p>Ainda não tem cadastro? <Link to="/register">Clique Aqui!</Link></p>
+                <div className="contentInfo">
+                    <img src={logoPerson} alt="" />
+                    <h2>Bem vindo a bordo!</h2>
+                    <p>vamos lá?</p>
+
+                </div>
+                <div className="contentForm">
+                
+                <form onSubmit={conectUser}>  
+                    
+                    <div className="inputView">
+                    <Envelope size={32} />
+                    <input type="email" id="userName" placeholder=" Email" onChange={e=>setUser(e.target.value)}/>
+                    </div>
+                    <div className="inputView">
+                    <Lock size={32} />
+                    <input type="password" id="password" placeholder="Password" onChange={(e)=>setPass(e.target.value)}/>
+                    </div>
+                        
+                    
+                    <button className="loginButton">Log in</button>
+                </form>
+                <p>Ainda não tem cadastro? </p>
+                <button onClick={buttonRegister} className="buttonRegister">Registrar</button>
+                </div>
+               
+        
         </div>
+        <ToastContainer/>
         </div>
    )
 }

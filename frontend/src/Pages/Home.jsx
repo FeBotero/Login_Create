@@ -1,6 +1,9 @@
+import "./Home.css"
+import homeImage from "../assets/homeImage.png"
 export function Home(){
     return(
-    <div>
-        <h1>Bem vindo a nossa plataforma</h1>
+    <div className="containerHome">
+        <h1 className="messageHello">Bem vindo ao nosso espaço</h1>
+        <img src={homeImage} alt="" />
     </div>)
 }

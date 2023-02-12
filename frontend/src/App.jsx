@@ -24,7 +24,7 @@ export function App() {
      
   return (
     <div className="App">
-      {user?<HeaderUser props={user} id={user.id}/>:<Header/>}
+      {user?<HeaderUser user={user} id={user.id}/>:<Header/>}
       <Routes>
           <Route exact path="/"index  element={<Home/>}/>
           <Route exact path="/login" element={<Login/>}/>

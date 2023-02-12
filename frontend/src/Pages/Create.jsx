@@ -3,6 +3,13 @@ import {Link, useNavigate} from "react-router-dom"
 import "./form.css"
 import { useState } from "react"
 import { API } from "../API/api"
+import Logoregister from "../assets/LogoRegister.png"
+import back from "../assets/Back.png"
+import { Envelope,Lock,User,Checks } from "phosphor-react";
+import "react-toastify/dist/ReactToastify.css";
+
+import { ToastContainer, toast } from 'react-toastify';
+
 export function Create(){
     const [user,setUser] = useState()
     const [name,setName] = useState()
@@ -29,37 +36,76 @@ export function Create(){
         if(ValidarEmail(payload.email)){
             const request = await API.users.createUrl(payload)
             const data = await request.json()
-            if(request.status==201){
-                alert(data.message)
+            if(request.status==200){
+                toast.success(data.message, {
+                    position: toast.POSITION.TOP_RIGHT
+                });
+                
                 navigate("/User/"+user.id)
                 window.location.href=window.location.href
             }else{
-                alert(data.message)
+                toast.error(data.message, {
+                    position: toast.POSITION.TOP_CENTER
+                });
             }
         }else{
-            alert("Favor inserir um email valido!")
+            toast.error('Favor inserir um email valido!', {
+                position: toast.POSITION.TOP_CENTER
+            });
         }
     }
-    
+    function buttonLogin(){
+        navigate("/login")
+    }    
 
     return(
-        <div className="containerUser">
-            <div className="contentUser">
-            <form onSubmit={createUser}>
-            <label htmlFor="name">Nome</label>
-            <input type="text" id="name" onChange={e=>setName(e.target.value)}/>
-            <label htmlFor="userName">E-mail</label>
-            <input type="text" id="userName"onChange={e=>setUser(e.target.value)}/>
-            <label htmlFor="password">Senha</label>
-            <input type="password" id="password" onChange={e=>setPass(e.target.value)}/>
-            <label htmlFor="passwordConfirm">Confirmação de Senha</label>
-            <input type="password" id="passwordConfirm"onChange={e=>setConfPass(e.target.value)}/>
-            <button className="createButton">Cadastrar</button>
-        </form>
+   
+    <div className="containerUser">
+            <div className="contentUser">    
+            <div className="contentInfoUser">
+                    <img className="img1" src={back} alt="" />
+                    <img  className="img2"src={Logoregister} alt="" />
+                    <h2>Vamos embarcar?</h2>
+                    <p>apenas alguns cliques e começamos</p>
 
-         <p>Já tem cadastro? <Link to="/Login">Clique Aqui!</Link></p>
-            </div>
+                </div>
+                <div className="contentFormUser">
+                <form onSubmit={createUser}>  
+                
+                    <div className="inputViewUser">
+                    <User size={32} />
+                    <input type="text" id="name" placeholder="Nome" onChange={e=>setName(e.target.value)}/>
+                    </div>
+                    <div className="inputViewUser">
+                    <Envelope size={32} />
+                    <input type="text" id="userName"placeholder="Email" onChange={e=>setUser(e.target.value)}/>
+                    </div>
+            
+                    
+                    
+                    <div className="inputViewUser">
+                    <Lock size={32} />
+                    <input type="password" id="password" placeholder="Senha" onChange={e=>setPass(e.target.value)}/>
+                    </div>
+                    <div className="inputViewUser">
+                    <Checks size={32} />
+                    <input type="password" id="passwordConfirm"placeholder="Confirmação de senha" onChange={e=>setConfPass(e.target.value)}/>
+                    </div>
+                    
+                    <button className="createButton">Registrar</button>
+                </form>
+                <p>Já tem cadastro? </p>
+                <button onClick={buttonLogin} className="buttonLogin">Log in</button>
+                </div>
+                
         
-    </div>
+        </div>
+        <ToastContainer/>
+        </div>
+
+
+
+
+
     )
 }

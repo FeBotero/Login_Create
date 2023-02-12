@@ -1,0 +1,13 @@
+.containerHome{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+.containerHome>img{
+    width: 50rem;
+}
+.messageHello{
+    margin-top: 3rem;
+}
